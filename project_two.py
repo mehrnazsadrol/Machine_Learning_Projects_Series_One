@@ -4,6 +4,7 @@ from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.model_selection import train_test_split 
 from scipy.stats import pearsonr, spearmanr
 import matplotlib.pyplot as plt
+from statsmodels.tsa.seasonal import seasonal_decompose
 
 df = pd.read_csv("Failed_Bank_Dataset_2.csv")
 
@@ -71,13 +72,29 @@ data_frame = df.copy()
 data_frame['Closing_Date'] = pd.to_datetime(data_frame['Closing_Date'])
 data_frame.sort_values(by='Closing_Date',inplace=True)
 
-plt.figure(figsize=(12,6))
-plt.plot(data_frame['Closing_Date'],data_frame['Total_Deposits'],label='Total Deposits')
-plt.plot(data_frame['Closing_Date'],data_frame['Total_Assets'],label='Total Assets')
-plt.xlabel('Closing date')
-plt.ylabel('Amount')
-plt.title('Total deposits and total assets over time')
-plt.legend()
-plt.show()
+# plt.figure(figsize=(12,6))
+# plt.plot(data_frame['Closing_Date'],data_frame['Total_Deposits'],label='Total Deposits')
+# plt.plot(data_frame['Closing_Date'],data_frame['Total_Assets'],label='Total Assets')
+# plt.xlabel('Closing date')
+# plt.ylabel('Amount')
+# plt.title('Total deposits and total assets over time')
+# plt.legend()
+# plt.show()
 
 #refer to  PATH = ("figure_one.png") for the plot. 
+
+#again nothing usefull was achieved from this analysis. 
+# I want to see if there is a seasonality of closing dates
+
+data_frame['Month'] = data_frame['Closing_Date'].dt.month
+print (data_frame['Month'].head())
+monthly_closure = data_frame['Month'].value_counts().sort_index()
+print (monthly_closure)
+plt.figure(figsize=(12,6))
+plt.plot(kind='bar',color='blue')
+plt.xlabel('Month')
+plt.ylabel('Number of Closures')
+plt.title('Number of Bank Closures in Each Month')
+plt.xticks(range(1, 13), ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'])
+plt.grid(axis='y')
+plt.show()
