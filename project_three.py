@@ -1,22 +1,32 @@
+
+## Analyzing stroke prediction data set. Different visualization methods used to get insights 
+## to the dataset and logisticregression model used to predict strokes on patients 
+## Author : Mehrnaz Sadroleslami 
+## Date : Aug 4th, 2023
+## DataSet : https://www.kaggle.com/datasets/fedesoriano/stroke-prediction-dataset
+
 import pandas as pd
 import matplotlib.pyplot as pyplt
 from scipy import stats
 import numpy as np
-
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import  accuracy_score,classification_report
+from sklearn.preprocessing import LabelEncoder
 
 df = pd.read_csv("healthcare-dataset-stroke-data.csv")
 
 
 #let's get some information about the data 
 pd.set_option('display.max_columns', None)
-print (df.describe()); 
-print (df.info)
-print (df.dtypes)
+# print (df.describe()); 
+# print (df.info)
+# print (df.dtypes)
 
 
 #clean the data 
 df.dropna(inplace = True)
-print (df.isnull().sum())
+# print (df.isnull().sum())
 
 # I want to check the outliers 
 selected_cols = ['bmi','avg_glucose_level','age']
@@ -73,9 +83,7 @@ axes = axes.flatten()
 #pie chart to show the female to make ratio
 
 female_count = df[ df['gender'] == 'Female'].shape[0]
-print(female_count)
 male_count = df[df['gender'] == 'Male'].shape[0]
-print (male_count)
 total_count = female_count + male_count
 labels = ['Female','Male']
 size = [(female_count/total_count), (male_count/total_count)]
@@ -141,3 +149,52 @@ fig.delaxes(axes[7])
 fig.suptitle('Stroke Data Visualizations', fontsize=10)
 pyplt.tight_layout();
 pyplt.show()
+
+#refer to  PATH = ("figure_4_3.png") for the plot.
+
+
+
+# here starts the machine learning part of this project !!
+#let the fun start
+print (df.columns)
+label_encoder = LabelEncoder()
+categorical_cols = ['gender', 'ever_married', 'work_type', 'Residence_type', 'smoking_status']
+for col in categorical_cols:
+    df[col] = label_encoder.fit_transform(df[col])
+
+X = df.drop(['stroke','bmi_category'], axis=1)
+y =df['stroke']
+
+train_X,val_X,train_y,val_y = train_test_split(X,y,random_state=42)
+
+model = LogisticRegression(random_state= 42)
+model.fit(train_X,train_y)
+y_prediction = model.predict(val_X)
+
+accuracy = accuracy_score(val_y, y_prediction)
+print("Accuracy of prediction with the logistic regression model is :", accuracy)
+class_report = classification_report(val_y, y_prediction)
+print("Classification Report:")
+print (class_report)
+
+
+#
+#result: 
+#Accuracy of prediction with the logistic regression model is : 0.9495114006514658
+#
+# Classification Report:
+#               precision    recall  f1-score   support
+
+#            0       0.95      1.00      0.97      1165
+#            1       1.00      0.02      0.03        63
+
+#     accuracy                           0.95      1228
+#    macro avg       0.97      0.51      0.50      1228
+# weighted avg       0.95      0.95      0.93      1228
+#
+#
+#
+#
+# you can see that the model is predicting the strokes on the patients based the on the
+#given data with a high accuracy. 
+

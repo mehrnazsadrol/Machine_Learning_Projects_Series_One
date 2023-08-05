@@ -1,3 +1,9 @@
+
+## Analyzing the failed bank dataset using different statistical and visualization methods.
+## Author : Mehrnaz Sadroleslami 
+## Date : Aug 3rd, 2023
+## DataSet : https://www.kaggle.com/datasets/neutrino404/failed-banks-fdic-data
+
 import pandas as pd
 from sklearn.metrics import mean_squared_error,r2_score
 from sklearn.ensemble import GradientBoostingRegressor
