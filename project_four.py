@@ -4,6 +4,8 @@ from PIL import Image
 import cv2
 import os
 
+from sklearn.model_selection import train_test_split
+
 path = './game-of-deep-learning-ship-datasets/train/images/'
 df = pd.read_csv('./game-of-deep-learning-ship-datasets/train/train.csv')
 
@@ -80,3 +82,9 @@ df['blue'] = b
 
 
 print (df[['red','green','blue','image']].head())
+
+
+
+X,y = df[['path','classes']],df['classes']
+X_train, X_val, y_train, y_val = train_test_split(X,y,random_state=42)
+
